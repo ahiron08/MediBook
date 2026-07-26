@@ -93,9 +93,14 @@ app.use((req, res, next) => {
 });
 
 // Enable CORS with proper configuration
+// Allow both the CLIENT_URL env var and the ALLOWED_ORIGINS list
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : [process.env.CLIENT_URL || 'http://localhost:5173'];
+  : [clientUrl];
+
+// Log the allowed origins for debugging
+console.log('CORS allowed origins:', allowedOrigins);
 
 app.use(
   cors({
@@ -104,6 +109,7 @@ app.use(
       if (!origin) return callback(null, true);
       
       if (allowedOrigins.indexOf(origin) === -1) {
+        console.error(`CORS rejected origin: ${origin}. Allowed origins: ${JSON.stringify(allowedOrigins)}`);
         const msg = 'The CORS policy for this site does not allow access from the specified origin.';
         return callback(new Error(msg), false);
       }

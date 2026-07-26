@@ -157,6 +157,7 @@ app.use('/api/auth', authLimiter);
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/doctor', require('./routes/doctor'));
+app.use('/api/doctor-profile', require('./routes/doctorProfile'));
 app.use('/api/availability', require('./routes/availability'));
 app.use('/api/users', require('./routes/users'));
 

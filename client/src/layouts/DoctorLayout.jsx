@@ -13,6 +13,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Settings,
 } from 'lucide-react';
 
 const DoctorLayout = () => {
@@ -27,8 +28,8 @@ const DoctorLayout = () => {
     { path: '/doctor/calendar', label: 'Calendar', icon: CalendarDays },
     { path: '/doctor/appointments', label: 'Appointments', icon: CalendarCheck },
     { path: '/doctor/availability', label: 'Availability', icon: Clock },
-    { path: '/doctor/profile', label: 'My Profile', icon: UserCircle },
-    { path: '/doctor/profile-manage', label: 'Manage Profile', icon: Settings },
+    { path: '/doctor/profile', label: 'Profile', icon: UserCircle },
+    { path: '/doctor/manage-profile', label: 'Manage Profile', icon: Settings },
   ];
 
   const handleLogout = () => {

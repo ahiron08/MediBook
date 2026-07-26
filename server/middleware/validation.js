@@ -193,6 +193,145 @@ const validationSchemas = {
     date: commonValidations.date,
   }),
 
+  // Doctor profile validation
+  updateDoctorProfile: Joi.object({
+    specialization: Joi.string().max(100).trim().optional(),
+    experience: Joi.string().max(50).trim().optional(),
+    gender: Joi.string().valid('male', 'female', 'other').optional(),
+    languages: Joi.array().items(Joi.string()).optional(),
+    about: Joi.string().max(2000).trim().optional(),
+    education: Joi.array().items(Joi.string()).optional(),
+    specialInterests: Joi.array().items(Joi.string()).optional(),
+    registrationNumber: Joi.string().max(50).trim().optional(),
+    medicalCouncil: Joi.string().max(100).trim().optional(),
+    qualifications: Joi.array().items(
+      Joi.object({
+        degree: Joi.string().required(),
+        institution: Joi.string().optional(),
+        year: Joi.string().optional(),
+        type: Joi.string().valid('degree', 'certification', 'fellowship', 'training').optional(),
+      })
+    ).optional(),
+    experienceDetails: Joi.array().items(
+      Joi.object({
+        position: Joi.string().required(),
+        hospital: Joi.string().required(),
+        startDate: Joi.string().required(),
+        endDate: Joi.string().optional(),
+        description: Joi.string().optional(),
+        isCurrent: Joi.boolean().optional(),
+      })
+    ).optional(),
+    achievements: Joi.array().items(Joi.string()).optional(),
+    awards: Joi.array().items(Joi.string()).optional(),
+    services: Joi.array().items(
+      Joi.object({
+        name: Joi.string().required(),
+        description: Joi.string().required(),
+        fee: Joi.string().optional(),
+        duration: Joi.string().optional(),
+        icon: Joi.string().optional(),
+        order: Joi.number().optional(),
+      })
+    ).optional(),
+    fees: Joi.array().items(
+      Joi.object({
+        type: Joi.string().valid('new_consultation', 'follow_up', 'video_consultation', 'emergency').required(),
+        amount: Joi.number().min(0).required(),
+        currency: Joi.string().optional(),
+        isActive: Joi.boolean().optional(),
+      })
+    ).optional(),
+    consultationFeeRange: Joi.object({
+      min: Joi.number().min(0).optional(),
+      max: Joi.number().min(0).optional(),
+    }).optional(),
+    clinic: Joi.object({
+      name: Joi.string().required(),
+      address: Joi.string().required(),
+      landmark: Joi.string().optional(),
+      city: Joi.string().required(),
+      state: Joi.string().required(),
+      pincode: Joi.string().required(),
+      phone: Joi.string().required(),
+      whatsapp: Joi.string().required(),
+      email: Joi.string().email().required(),
+      timing: Joi.string().optional(),
+      emergencyContact: Joi.string().optional(),
+    }).optional(),
+    timings: Joi.array().items(
+      Joi.object({
+        day: Joi.string().valid('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday').required(),
+        isWorking: Joi.boolean().optional(),
+        slots: Joi.array().items(
+          Joi.object({
+            start: Joi.string().required(),
+            end: Joi.string().required(),
+          })
+        ).optional(),
+      })
+    ).optional(),
+    googleMap: Joi.object({
+      url: Joi.string().uri().optional(),
+      latitude: Joi.string().optional(),
+      longitude: Joi.string().optional(),
+      embedUrl: Joi.string().uri().optional(),
+    }).optional(),
+    testimonials: Joi.array().items(
+      Joi.object({
+        patientName: Joi.string().required(),
+        isAnonymous: Joi.boolean().optional(),
+        patientPhoto: Joi.string().optional(),
+        rating: Joi.number().min(1).max(5).required(),
+        review: Joi.string().required(),
+        date: Joi.date().optional(),
+        isVerified: Joi.boolean().optional(),
+        appointmentId: Joi.string().optional(),
+      })
+    ).optional(),
+    faqs: Joi.array().items(
+      Joi.object({
+        question: Joi.string().required(),
+        answer: Joi.string().required(),
+        order: Joi.number().optional(),
+      })
+    ).optional(),
+    seo: Joi.object({
+      metaTitle: Joi.string().max(60).optional(),
+      metaDescription: Joi.string().max(160).optional(),
+      keywords: Joi.array().items(Joi.string()).optional(),
+      canonicalUrl: Joi.string().uri().optional(),
+      ogTitle: Joi.string().optional(),
+      ogDescription: Joi.string().optional(),
+      ogImage: Joi.string().uri().optional(),
+      twitterCard: Joi.string().valid('summary', 'summary_large_image', 'app', 'player').optional(),
+      structuredData: Joi.object().optional(),
+    }).optional(),
+    socialLinks: Joi.array().items(
+      Joi.object({
+        platform: Joi.string().valid('facebook', 'instagram', 'twitter', 'linkedin', 'youtube').required(),
+        url: Joi.string().uri().required(),
+      })
+    ).optional(),
+    vacationDates: Joi.array().items(
+      Joi.object({
+        date: Joi.date().required(),
+        reason: Joi.string().optional(),
+      })
+    ).optional(),
+    isAvailable: Joi.boolean().optional(),
+    additionalInfo: Joi.object().optional(),
+  }),
+
+  addTestimonial: Joi.object({
+    patientName: Joi.string().required(),
+    isAnonymous: Joi.boolean().optional(),
+    rating: Joi.number().min(1).max(5).required(),
+    review: Joi.string().required(),
+    isVerified: Joi.boolean().optional(),
+    appointmentId: Joi.string().optional(),
+  }),
+
   // Query validation
   getAppointmentsQuery: Joi.object({
     status: Joi.string().valid('pending', 'confirmed', 'completed', 'cancelled', 'rescheduled').optional(),

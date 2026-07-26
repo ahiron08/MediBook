@@ -1,17 +1,23 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import API from '../../config/api';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Modal from '../../components/ui/Modal';
 import { format } from 'date-fns';
-import { CalendarDays, Clock, X, Eye, User } from 'lucide-react';
+import { CalendarDays, Clock, X, Eye, User, Phone, MessageCircle, Navigation, MapPin } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 
 const UpcomingAppointments = () => {
   const [cancelId, setCancelId] = useState(null);
   const [viewId, setViewId] = useState(null);
   const queryClient = useQueryClient();
+
+  const { data: profileData } = useQuery({
+    queryKey: ['doctorProfile'],
+    queryFn: () => API.get('/doctor-profile/public'),
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ['upcomingAppointments'],
@@ -116,19 +122,34 @@ const UpcomingAppointments = () => {
         isOpen={!!viewId}
         onClose={() => setViewId(null)}
         title="Appointment Details"
-        size="md"
+        size="lg"
       >
         {viewAppointment && (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 pb-4 border-b border-[var(--color-border-light)]">
-              <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-primary-50)] flex items-center justify-center shrink-0">
-                <User size={22} className="text-[var(--color-primary)]" />
+            {/* Doctor Info */}
+            {profileData?.data?.profile && (
+              <div className="flex items-center gap-3 pb-4 border-b border-[var(--color-border-light)]">
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 shrink-0">
+                  {profileData.data.profile.profilePhoto ? (
+                    <img src={profileData.data.profile.profilePhoto} alt="Doctor" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-[var(--color-primary-50)]">
+                      <User size={20} className="text-[var(--color-primary)]" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-[var(--color-text)]">
+                    Dr. {profileData.data.profile.doctor?.name || 'Doctor'}
+                  </h3>
+                  <p className="text-sm text-[var(--color-text-muted)]">
+                    {profileData.data.profile.specialization}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-[var(--color-text)]">Appointment Details</h3>
-                <p className="text-sm text-[var(--color-text-muted)]">View your appointment information</p>
-              </div>
-            </div>
+            )}
+
+            {/* Appointment Info */}
             <div className="space-y-3">
               <div className="flex justify-between items-center py-3 border-b border-[var(--color-border-light)]">
                 <span className="text-sm text-[var(--color-text-muted)]">Date</span>
@@ -151,6 +172,71 @@ const UpcomingAppointments = () => {
                   <span className="text-sm text-[var(--color-text-muted)] block mb-1">Reason</span>
                   <p className="text-sm font-medium text-[var(--color-text)]">{viewAppointment.reason}</p>
                 </div>
+              )}
+
+              {/* Clinic Info */}
+              {profileData?.data?.profile?.clinic && (
+                <>
+                  <div className="pt-3 border-t border-[var(--color-border-light)]">
+                    <h4 className="font-semibold text-[var(--color-text)] mb-2 flex items-center gap-2">
+                      <MapPin size={16} />
+                      Clinic Information
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <p className="font-medium">{profileData.data.profile.clinic.name}</p>
+                      <p className="text-[var(--color-text-secondary)]">
+                        {profileData.data.profile.clinic.address}
+                      </p>
+                      {profileData.data.profile.clinic.phone && (
+                        <a href={`tel:${profileData.data.profile.clinic.phone}`} className="flex items-center gap-2 text-[var(--color-primary)] hover:underline">
+                          <Phone size={14} />
+                          {profileData.data.profile.clinic.phone}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap gap-2 pt-3">
+                    {profileData.data.profile.clinic.phone && (
+                      <a
+                        href={`tel:${profileData.data.profile.clinic.phone}`}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+                      >
+                        <Phone size={16} />
+                        Call
+                      </a>
+                    )}
+                    {profileData.data.profile.clinic.whatsapp && (
+                      <a
+                        href={`https://wa.me/${profileData.data.profile.clinic.whatsapp.replace(/\D/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600"
+                      >
+                        <MessageCircle size={16} />
+                        WhatsApp
+                      </a>
+                    )}
+                    {profileData.data.profile.googleMap?.url && (
+                      <a
+                        href={profileData.data.profile.googleMap.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700"
+                      >
+                        <Navigation size={16} />
+                        Directions
+                      </a>
+                    )}
+                    <Link
+                      to="/doctor-profile"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-medium hover:bg-[var(--color-primary-dark)]"
+                    >
+                      View Profile
+                    </Link>
+                  </div>
+                </>
               )}
             </div>
             <button

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDoctor } from '../../context/DoctorContext';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { Save, User, MapPin, Phone, DollarSign, Globe, GraduationCap, Languages, Briefcase, Upload, X } from 'lucide-react';
+import { Save, User, MapPin, Phone, DollarSign, GraduationCap, Languages, Briefcase, Upload, X } from 'lucide-react';
 import doctorProfileAPI from '../../services/doctorProfile';
 
 const DoctorProfileSettings = () => {
@@ -35,9 +35,6 @@ const DoctorProfileSettings = () => {
     clinicTiming: '',
     workingDays: '',
     googleMapsLink: '',
-    seoTitle: '',
-    seoDescription: '',
-    seoKeywords: '',
   });
 
   useEffect(() => {
@@ -64,9 +61,6 @@ const DoctorProfileSettings = () => {
         clinicTiming: profile.clinicTiming || '',
         workingDays: profile.workingDays || '',
         googleMapsLink: profile.googleMapsLink || '',
-        seoTitle: profile.seoTitle || '',
-        seoDescription: profile.seoDescription || '',
-        seoKeywords: profile.seoKeywords || '',
       });
       setImagePreview(profile.profilePhoto || null);
     }
@@ -125,7 +119,6 @@ const DoctorProfileSettings = () => {
     { id: 'basic', label: 'Basic Info', icon: User },
     { id: 'clinic', label: 'Clinic', icon: MapPin },
     { id: 'contact', label: 'Contact', icon: Phone },
-    { id: 'seo', label: 'SEO', icon: Globe },
   ];
 
   return (
@@ -304,29 +297,6 @@ const DoctorProfileSettings = () => {
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Google Maps Link</label>
                 <input type="text" name="googleMapsLink" value={formData.googleMapsLink} onChange={handleChange} className="input-base" />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* SEO Tab */}
-        {activeTab === 'seo' && (
-          <div className="card space-y-4">
-            <h2 className="text-xl font-semibold text-[var(--color-text)] mb-4">SEO Settings</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">SEO Title</label>
-                <input type="text" name="seoTitle" value={formData.seoTitle} onChange={handleChange} className="input-base" maxLength="60" />
-                <p className="text-xs text-[var(--color-text-muted)] mt-1">{formData.seoTitle.length}/60 characters</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">SEO Description</label>
-                <textarea name="seoDescription" value={formData.seoDescription} onChange={handleChange} className="textarea-base" rows="2" maxLength="160"></textarea>
-                <p className="text-xs text-[var(--color-text-muted)] mt-1">{formData.seoDescription.length}/160 characters</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">SEO Keywords</label>
-                <input type="text" name="seoKeywords" value={formData.seoKeywords} onChange={handleChange} className="input-base" />
               </div>
             </div>
           </div>

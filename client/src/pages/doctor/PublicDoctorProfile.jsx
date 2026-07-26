@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import API from '../../config/api';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import FloatingContactButtons from '../../components/common/FloatingContactButtons';
-import SEO from '../../components/common/SEO';
 import { 
   MapPin, Phone, Clock, DollarSign, ExternalLink, Star, CalendarCheck, 
   MessageCircle, GraduationCap, Languages, Briefcase, Award 
@@ -20,7 +19,6 @@ const PublicDoctorProfile = () => {
 
   return (
     <>
-      <SEO />
       <div className="min-h-screen">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white py-16">

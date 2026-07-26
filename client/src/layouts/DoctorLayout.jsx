@@ -8,6 +8,8 @@ import {
   CalendarCheck,
   Clock,
   UserCircle,
+  Briefcase,
+  Star,
   LogOut,
   Menu,
   X,
@@ -27,6 +29,8 @@ const DoctorLayout = () => {
     { path: '/doctor/calendar', label: 'Calendar', icon: CalendarDays },
     { path: '/doctor/appointments', label: 'Appointments', icon: CalendarCheck },
     { path: '/doctor/availability', label: 'Availability', icon: Clock },
+    { path: '/doctor/services', label: 'Services', icon: Briefcase },
+    { path: '/doctor/testimonials', label: 'Testimonials', icon: Star },
     { path: '/doctor/profile', label: 'Profile', icon: UserCircle },
   ];
 

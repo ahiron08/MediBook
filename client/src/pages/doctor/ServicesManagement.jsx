@@ -1,49 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import API from '../../config/api';
+import { useDoctor } from '../../context/DoctorContext';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { Plus, Edit2, Trash2, Save } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
+import doctorProfileAPI from '../../services/doctorProfile';
 
 const ServicesManagement = () => {
   const queryClient = useQueryClient();
-  const [services, setServices] = useState([]);
+  const { profile, isLoading, addService, updateService, deleteService } = useDoctor();
   const [editingId, setEditingId] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', fee: '' });
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['doctorServices'],
-    queryFn: () => API.get('/doctor-profile/services').then(res => res.data),
-  });
+  const services = profile?.services || [];
 
-  useEffect(() => {
-    if (data?.data) {
-      setServices(data.data);
-    }
-  }, [data]);
-
-  const updateMutation = useMutation({
-    mutationFn: (services) => API.put('/doctor-profile/services', { services }),
-    onSuccess: () => {
-      toast.success('Services updated');
-      queryClient.invalidateQueries({ queryKey: ['doctorServices'] });
-      setShowAddForm(false);
-      setEditingId(null);
-      setFormData({ name: '', description: '', fee: '' });
-    },
-    onError: () => toast.error('Failed to update services'),
-  });
-
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
-    const newService = {
-      _id: Date.now().toString(),
-      name: formData.name,
-      description: formData.description,
-      fee: formData.fee ? Number(formData.fee) : null,
-    };
-    updateMutation.mutate([...services, newService]);
+    try {
+      await addService({
+        name: formData.name,
+        description: formData.description,
+        fee: formData.fee ? Number(formData.fee) : null,
+      });
+      setShowAddForm(false);
+      setFormData({ name: '', description: '', fee: '' });
+    } catch (error) {
+      console.error('Failed to add service:', error);
+    }
   };
 
   const handleEdit = (service) => {
@@ -51,16 +35,36 @@ const ServicesManagement = () => {
     setFormData({ name: service.name, description: service.description, fee: service.fee || '' });
   };
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    const updated = services.map(s => s._id === editingId ? { ...s, ...formData, fee: formData.fee ? Number(formData.fee) : null } : s);
-    updateMutation.mutate(updated);
+    try {
+      await updateService(editingId, {
+        name: formData.name,
+        description: formData.description,
+        fee: formData.fee ? Number(formData.fee) : null,
+      });
+      setEditingId(null);
+      setFormData({ name: '', description: '', fee: '' });
+    } catch (error) {
+      console.error('Failed to update service:', error);
+    }
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm('Delete this service?')) {
-      updateMutation.mutate(services.filter(s => s._id !== id));
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this service?')) {
+      try {
+        await deleteService(id);
+        toast.success('Service deleted successfully');
+      } catch (error) {
+        console.error('Failed to delete service:', error);
+      }
     }
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setShowAddForm(false);
+    setFormData({ name: '', description: '', fee: '' });
   };
 
   if (isLoading) return <LoadingSpinner text="Loading services..." />;
@@ -72,7 +76,7 @@ const ServicesManagement = () => {
           <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Services</h1>
           <p className="text-[var(--color-text-muted)]">Manage your medical services</p>
         </div>
-        {!showAddForm && (
+        {!showAddForm && !editingId && (
           <button onClick={() => setShowAddForm(true)} className="btn-primary flex items-center gap-2">
             <Plus size={18} />
             Add Service
@@ -83,28 +87,55 @@ const ServicesManagement = () => {
       {/* Add/Edit Form */}
       {(showAddForm || editingId) && (
         <div className="card mb-6">
-          <h3 className="text-lg font-semibold text-[var(--color-text)] mb-4">
-            {editingId ? 'Edit Service' : 'Add New Service'}
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-[var(--color-text)]">
+              {editingId ? 'Edit Service' : 'Add New Service'}
+            </h3>
+            {editingId && (
+              <button onClick={cancelEdit} className="p-1 hover:bg-[var(--color-bg-alt)] rounded-lg transition-colors">
+                <X size={20} className="text-[var(--color-text-secondary)]" />
+              </button>
+            )}
+          </div>
           <form onSubmit={editingId ? handleUpdate : handleAdd} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Service Name</label>
-              <input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="input-base" required />
+              <input
+                type="text"
+                value={formData.name}
+                onChange={e => setFormData({...formData, name: e.target.value})}
+                className="input-base"
+                required
+                placeholder="e.g., Antenatal Care & Delivery"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Description</label>
-              <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="textarea-base" rows="3"></textarea>
+              <textarea
+                value={formData.description}
+                onChange={e => setFormData({...formData, description: e.target.value})}
+                className="textarea-base"
+                rows="3"
+                placeholder="Describe the service..."
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Fee (₹) - Optional</label>
-              <input type="number" value={formData.fee} onChange={e => setFormData({...formData, fee: e.target.value})} className="input-base" min="0" placeholder="Leave empty if not applicable" />
+              <input
+                type="number"
+                value={formData.fee}
+                onChange={e => setFormData({...formData, fee: e.target.value})}
+                className="input-base"
+                min="0"
+                placeholder="Leave empty if not applicable"
+              />
             </div>
             <div className="flex gap-3">
               <button type="submit" className="btn-primary flex items-center gap-2">
                 <Save size={18} />
                 {editingId ? 'Update' : 'Add'} Service
               </button>
-              <button type="button" onClick={() => { setShowAddForm(false); setEditingId(null); setFormData({ name: '', description: '', fee: '' }); }} className="btn-secondary">
+              <button type="button" onClick={cancelEdit} className="btn-secondary">
                 Cancel
               </button>
             </div>
@@ -121,21 +152,64 @@ const ServicesManagement = () => {
         ) : (
           services.map(service => (
             <div key={service._id} className="card hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-[var(--color-text)] text-lg">{service.name}</h3>
-                  {service.description && <p className="text-sm text-[var(--color-text-secondary)] mt-1">{service.description}</p>}
-                  {service.fee && <p className="text-sm font-medium text-[var(--color-primary)] mt-2">₹{service.fee}</p>}
+              {editingId === service._id ? (
+                <form onSubmit={handleUpdate} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Service Name</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={e => setFormData({...formData, name: e.target.value})}
+                      className="input-base"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Description</label>
+                    <textarea
+                      value={formData.description}
+                      onChange={e => setFormData({...formData, description: e.target.value})}
+                      className="textarea-base"
+                      rows="3"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Fee (₹)</label>
+                    <input
+                      type="number"
+                      value={formData.fee}
+                      onChange={e => setFormData({...formData, fee: e.target.value})}
+                      className="input-base"
+                      min="0"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <button type="submit" className="btn-primary flex items-center gap-2">
+                      <Save size={18} />
+                      Update
+                    </button>
+                    <button type="button" onClick={cancelEdit} className="btn-secondary">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-[var(--color-text)] text-lg">{service.name}</h3>
+                    {service.description && <p className="text-sm text-[var(--color-text-secondary)] mt-1">{service.description}</p>}
+                    {service.fee && <p className="text-sm font-medium text-[var(--color-primary)] mt-2">₹{service.fee}</p>}
+                  </div>
+                  <div className="flex gap-2 ml-4">
+                    <button onClick={() => handleEdit(service)} className="p-2 hover:bg-[var(--color-bg-alt)] rounded-lg transition-colors" title="Edit">
+                      <Edit2 size={18} className="text-[var(--color-text-secondary)]" />
+                    </button>
+                    <button onClick={() => handleDelete(service._id)} className="p-2 hover:bg-[var(--color-danger-50)] rounded-lg transition-colors" title="Delete">
+                      <Trash2 size={18} className="text-[var(--color-danger)]" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex gap-2 ml-4">
-                  <button onClick={() => handleEdit(service)} className="p-2 hover:bg-[var(--color-bg-alt)] rounded-lg transition-colors">
-                    <Edit2 size={18} className="text-[var(--color-text-secondary)]" />
-                  </button>
-                  <button onClick={() => handleDelete(service._id)} className="p-2 hover:bg-[var(--color-danger-50)] rounded-lg transition-colors">
-                    <Trash2 size={18} className="text-[var(--color-danger)]" />
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           ))
         )}

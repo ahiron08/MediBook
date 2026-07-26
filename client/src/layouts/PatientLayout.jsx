@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import FloatingContactButtons from '../components/common/FloatingContactButtons';
 
 const PatientLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -161,6 +162,9 @@ const PatientLayout = () => {
           <Outlet />
         </div>
       </main>
+
+      {/* Floating Contact Buttons */}
+      <FloatingContactButtons />
     </div>
   );
 };

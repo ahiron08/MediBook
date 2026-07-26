@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { DoctorProvider } from './context/DoctorContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Layouts
@@ -12,6 +13,10 @@ import PatientLayout from './layouts/PatientLayout';
 // Auth Pages
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+
+// Public Pages
+import HomePage from './pages/HomePage';
+import PublicDoctorProfile from './pages/doctor/PublicDoctorProfile';
 
 // Patient Pages
 import BookAppointment from './pages/patient/BookAppointment';
@@ -25,6 +30,8 @@ import CalendarView from './pages/doctor/Calendar';
 import DoctorAppointments from './pages/doctor/Appointments';
 import AvailabilityPage from './pages/doctor/Availability';
 import DoctorProfile from './pages/doctor/DoctorProfile';
+import ServicesManagement from './pages/doctor/ServicesManagement';
+import TestimonialsManagement from './pages/doctor/TestimonialsManagement';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,13 +47,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <DoctorProvider>
         <Router>
           <Routes>
             {/* Public Routes */}
             <Route element={<PublicLayout />}>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/doctor-profile" element={<PublicDoctorProfile />} />
             </Route>
 
             {/* Patient Routes */}
@@ -81,6 +90,8 @@ function App() {
               <Route path="appointments" element={<DoctorAppointments />} />
               <Route path="availability" element={<AvailabilityPage />} />
               <Route path="profile" element={<DoctorProfile />} />
+              <Route path="services" element={<ServicesManagement />} />
+              <Route path="testimonials" element={<TestimonialsManagement />} />
               <Route path="settings" element={<AvailabilityPage />} />
             </Route>
 
@@ -88,6 +99,7 @@ function App() {
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </Router>
+        </DoctorProvider>
         <Toaster
           position="top-right"
           toastOptions={{

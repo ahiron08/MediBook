@@ -1,21 +1,27 @@
-import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import API from '../../config/api';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { MapPin, Phone, Clock, DollarSign, ExternalLink, Star, CalendarCheck, MessageCircle } from 'lucide-react';
+import FloatingContactButtons from '../../components/common/FloatingContactButtons';
+import SEO from '../../components/common/SEO';
+import { 
+  MapPin, Phone, Clock, DollarSign, ExternalLink, Star, CalendarCheck, 
+  MessageCircle, GraduationCap, Languages, Briefcase, Award 
+} from 'lucide-react';
+import { useDoctor } from '../../context/DoctorContext';
 
 const PublicDoctorProfile = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ['publicDoctorProfile'],
-    queryFn: () => API.get('/doctor-profile/profile').then(res => res.data),
-  });
-
-  const profile = data?.data || {};
+  const { profile, isLoading } = useDoctor();
 
   if (isLoading) return <LoadingSpinner text="Loading profile..." />;
 
+  if (!profile) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   return (
-    <div className="min-h-screen">
+    <>
+      <SEO />
+      <div className="min-h-screen">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white py-16">
         <div className="max-w-4xl mx-auto px-4">
@@ -57,40 +63,88 @@ const PublicDoctorProfile = () => {
           </section>
         )}
 
+        {/* Education & Languages */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {profile.education?.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
+                <GraduationCap size={28} className="text-[var(--color-primary)]" />
+                Education
+              </h2>
+              <div className="bg-white border border-[var(--color-border)] rounded-2xl p-5 space-y-3 shadow-sm">
+                {profile.education.map((edu, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <Award size={20} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                    <p className="text-[var(--color-text-secondary)]">{edu}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {profile.languagesSpoken?.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
+                <Languages size={28} className="text-[var(--color-primary)]" />
+                Languages
+              </h2>
+              <div className="bg-white border border-[var(--color-border)] rounded-2xl p-5 shadow-sm">
+                <p className="text-[var(--color-text-secondary)]">{profile.languagesSpoken.join(', ')}</p>
+              </div>
+            </section>
+          )}
+        </div>
+
         {/* Clinic Info */}
         <section>
           <h2 className="text-3xl font-bold text-[var(--color-text)] mb-6">Clinic Information</h2>
-          <div className="card">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold text-[var(--color-text)] mb-2">{profile.clinicName}</h3>
-                <div className="space-y-2 text-sm text-[var(--color-text-secondary)]">
-                  <p className="flex items-start gap-2">
-                    <MapPin size={18} className="mt-0.5 shrink-0" />
-                    {profile.clinicAddress}, {profile.landmark}, {profile.city}, {profile.state} - {profile.pincode}
-                  </p>
+          <div className="bg-white border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
+            <div>
+              <h3 className="font-semibold text-[var(--color-text)] mb-3">{profile.clinicName}</h3>
+              <div className="space-y-2 text-sm text-[var(--color-text-secondary)]">
+                <p className="flex items-start gap-2">
+                  <MapPin size={18} className="mt-0.5 shrink-0" />
+                  {profile.clinicAddress}, {profile.landmark}, {profile.city}, {profile.state} - {profile.pincode}
+                </p>
+                {profile.workingDays && (
                   <p className="flex items-center gap-2">
-                    <Phone size={18} />
-                    {profile.contactNumber}
+                    <Briefcase size={18} />
+                    {profile.workingDays}
                   </p>
-                  <p className="flex items-center gap-2">
-                    <Clock size={18} />
-                    {profile.clinicTiming}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <DollarSign size={18} />
-                    ₹{profile.consultationFeeMin} - ₹{profile.consultationFeeMax}
-                  </p>
-                </div>
-              </div>
-              <div>
-                {profile.googleMapsLink && (
-                  <a href={profile.googleMapsLink} target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
-                    <ExternalLink size={18} />
-                    View on Google Maps
-                  </a>
                 )}
+                <p className="flex items-center gap-2">
+                  <Clock size={18} />
+                  {profile.clinicTiming}
+                </p>
+                <p className="flex items-center gap-2">
+                  <DollarSign size={18} />
+                  ₹{profile.consultationFeeMin} - ₹{profile.consultationFeeMax}
+                </p>
+                <p className="flex items-center gap-2">
+                  <Phone size={18} />
+                  {profile.contactNumber}
+                </p>
               </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-4 border-t border-[var(--color-border-light)]">
+              {profile.googleMapsLink && (
+                <a 
+                  href={profile.googleMapsLink} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-[var(--color-primary)] text-white rounded-xl font-medium hover:bg-[var(--color-primary-dark)] transition-all duration-200"
+                >
+                  <ExternalLink size={18} />
+                  View on Google Maps
+                </a>
+              )}
+              <a 
+                href="/patient/book" 
+                className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition-all duration-200"
+              >
+                <CalendarCheck size={18} />
+                Book Appointment
+              </a>
             </div>
           </div>
         </section>
@@ -98,10 +152,10 @@ const PublicDoctorProfile = () => {
         {/* Services */}
         {profile.services?.length > 0 && (
           <section>
-            <h2 className="text-3xl font-bold text-[var(--color-text)] mb-6">Services</h2>
+            <h2 className="text-3xl font-bold text-[var(--color-text)] mb-6">Services Offered</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {profile.services.map(service => (
-                <div key={service._id} className="card">
+                <div key={service._id} className="bg-white border border-[var(--color-border)] rounded-2xl p-5 hover:shadow-md transition-shadow">
                   <h3 className="font-semibold text-[var(--color-text)] mb-2">{service.name}</h3>
                   {service.description && <p className="text-sm text-[var(--color-text-secondary)] mb-2">{service.description}</p>}
                   {service.fee && <p className="text-sm font-medium text-[var(--color-primary)]">₹{service.fee}</p>}
@@ -117,7 +171,7 @@ const PublicDoctorProfile = () => {
             <h2 className="text-3xl font-bold text-[var(--color-text)] mb-6">Patient Testimonials</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {profile.testimonials.map(testimonial => (
-                <div key={testimonial._id} className="card">
+                <div key={testimonial._id} className="bg-white border border-[var(--color-border)] rounded-2xl p-5 shadow-sm">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="font-semibold text-[var(--color-text)]">{testimonial.patientName}</span>
                     <div className="flex items-center gap-0.5">
@@ -135,29 +189,18 @@ const PublicDoctorProfile = () => {
 
         {/* Book Appointment CTA */}
         <section className="text-center py-8">
-          <a href="/patient/book" className="btn-primary inline-flex items-center gap-2 text-lg px-8 py-4">
+          <a href="/patient/book" className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--color-primary)] text-white rounded-xl font-medium text-lg hover:bg-[var(--color-primary-dark)] transition-all duration-200 shadow-lg hover:shadow-xl">
             <CalendarCheck size={24} />
             Book an Appointment
           </a>
         </section>
       </div>
+
+      {/* Floating Contact Buttons */}
+      <FloatingContactButtons />
     </div>
+    </>
   );
 };
 
 export default PublicDoctorProfile;
-</parameter>
-<task_progress>
-- [x] Backend: Model, Controller, Routes, server.js mount
-- [x] Frontend: API service
-- [x] Frontend: Doctor profile settings page
-- [x] Frontend: Services management page
-- [x] Frontend: Testimonials management page
-- [x] Frontend: Public doctor profile page
-- [ ] Frontend: Patient dashboard updates
-- [ ] Frontend: Homepage
-- [ ] Frontend: SEO
-- [ ] Update doctor routes/layout
-- [ ] Commit and push
-</parameter>
-</write_to_file>

@@ -1,11 +1,15 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useDoctor } from '../../context/DoctorContext';
 import API from '../../config/api';
 import toast from 'react-hot-toast';
-import { User, Mail, Phone, Shield } from 'lucide-react';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { User, Mail, Phone, Shield, Stethoscope, ExternalLink } from 'lucide-react';
 
 const PatientProfile = () => {
   const { user, updateUser } = useAuth();
+  const { profile, isLoading: profileLoading } = useDoctor();
   const [form, setForm] = useState({ name: user?.name || '', phone: user?.phone || '' });
   const [saving, setSaving] = useState(false);
 
@@ -23,13 +27,36 @@ const PatientProfile = () => {
     }
   };
 
+  if (profileLoading) {
+    return <LoadingSpinner text="Loading profile..." />;
+  }
+
   return (
-    <div className="max-w-3xl mx-auto animate-fade-in">
+    <div className="max-w-3xl mx-auto animate-fade-in space-y-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">My Profile</h1>
         <p className="text-[var(--color-text-muted)]">Manage your personal information</p>
       </div>
+
+      {/* Link to Doctor's Full Profile */}
+      {profile && (
+        <Link
+          to="/doctor-profile"
+          className="card bg-gradient-to-br from-[var(--color-primary-50)] to-white hover:shadow-md transition-shadow flex items-center justify-between p-5"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center">
+              <Stethoscope size={22} className="text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-[var(--color-text)]">View Doctor's Profile</p>
+              <p className="text-xs text-[var(--color-text-muted)]">See clinic info, services & more</p>
+            </div>
+          </div>
+          <ExternalLink size={18} className="text-[var(--color-text-muted)]" />
+        </Link>
+      )}
 
       {/* Profile Card */}
       <div className="card">

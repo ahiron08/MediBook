@@ -15,6 +15,7 @@ const testimonialSchema = new mongoose.Schema(
     rating: { type: Number, required: true, min: 1, max: 5 },
     review: { type: String, trim: true, default: '' },
     date: { type: Date, default: Date.now },
+    visible: { type: Boolean, default: true },
   },
   { _id: true }
 );
@@ -34,6 +35,8 @@ const doctorProfileSchema = new mongoose.Schema(
     qualifications: { type: String, trim: true, default: '' },
     about: { type: String, trim: true, default: '' },
     profilePhoto: { type: String, default: '' },
+    languagesSpoken: [{ type: String, trim: true }],
+    education: [{ type: String, trim: true }],
 
     // Clinic info
     clinicName: { type: String, trim: true, default: '' },
@@ -47,6 +50,7 @@ const doctorProfileSchema = new mongoose.Schema(
     consultationFeeMin: { type: Number, default: 0 },
     consultationFeeMax: { type: Number, default: 0 },
     clinicTiming: { type: String, trim: true, default: '' },
+    workingDays: { type: String, trim: true, default: '' },
     googleMapsLink: { type: String, trim: true, default: '' },
 
     // Services

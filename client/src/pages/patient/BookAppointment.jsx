@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useDoctor } from '../../context/DoctorContext';
 import API from '../../config/api';
 import toast from 'react-hot-toast';
-import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday, isBefore } from 'date-fns';
-import { ChevronLeft, ChevronRight, CalendarCheck, Clock, CheckCircle2, User, Hash, Phone, Mail } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarCheck, Clock, CheckCircle2, User, Hash, Phone, Mail, MapPin, DollarSign, ExternalLink, MessageCircle } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 
 const BookAppointment = () => {
-  const { user } = useAuth();
+  const { profile, isLoading: profileLoading } = useDoctor();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -17,11 +17,11 @@ const BookAppointment = () => {
   const [step, setStep] = useState(1);
   const [booking, setBooking] = useState(false);
   const [patientDetails, setPatientDetails] = useState({
-    name: user?.name || '',
+    name: '',
     age: '',
     gender: '',
-    phone: user?.phone || '',
-    email: user?.email || '',
+    phone: '',
+    email: '',
   });
 
   const dateStr = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
@@ -78,11 +78,11 @@ const BookAppointment = () => {
       setSelectedSlot(null);
       setReason('');
       setPatientDetails({
-        name: user?.name || '',
+        name: '',
         age: '',
         gender: '',
-        phone: user?.phone || '',
-        email: user?.email || '',
+        phone: '',
+        email: '',
       });
       refetch();
     } catch (error) {
@@ -92,6 +92,12 @@ const BookAppointment = () => {
     }
   };
 
+  if (profileLoading) return <LoadingSpinner text="Loading doctor information..." />;
+
+  if (!profile) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   return (
     <div className="max-w-5xl mx-auto animate-fade-in">
       {/* Header */}
@@ -100,85 +106,88 @@ const BookAppointment = () => {
         <p className="text-[var(--color-text-muted)]">Choose your preferred date and time slot</p>
       </div>
 
-      {/* Steps */}
-      <div className="flex items-center gap-2 sm:gap-3 mb-8 overflow-x-auto pb-2">
-        {['Select Date', 'Choose Time', 'Confirm'].map((label, i) => (
-          <div key={i} className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 ${
-              step >= i + 1 ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-[var(--color-bg-alt)] text-[var(--color-text-muted)]'
-            }`}>
-              {i + 1}
-            </div>
-            <span className={`text-sm font-medium whitespace-nowrap ${step >= i + 1 ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'}`}>
-              {label}
-            </span>
-            {i < 2 && <div className="w-6 sm:w-10 h-0.5 bg-[var(--color-border)] shrink-0" />}
-          </div>
-        ))}
-      </div>
-
-      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6">
-        {/* Calendar */}
-        <div className="card p-0 overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border-light)]">
-            <button
-              onClick={handlePrevMonth}
-              className="h-10 w-10 flex items-center justify-center rounded-[var(--radius-md)] hover:bg-[var(--color-bg-alt)] transition-colors"
-              aria-label="Previous month"
-            >
-              <ChevronLeft size={20} className="text-[var(--color-text-secondary)]" />
-            </button>
-            <h2 className="text-base sm:text-lg font-semibold text-[var(--color-text)]">
-              {format(currentMonth, 'MMMM yyyy')}
-            </h2>
-            <button
-              onClick={handleNextMonth}
-              className="h-10 w-10 flex items-center justify-center rounded-[var(--radius-md)] hover:bg-[var(--color-bg-alt)] transition-colors"
-              aria-label="Next month"
-            >
-              <ChevronRight size={20} className="text-[var(--color-text-secondary)]" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-7 border-b border-[var(--color-border-light)]">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <div key={day} className="text-center text-xs font-medium text-[var(--color-text-muted)] py-3">
-                {day}
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+        {/* Left Column - Calendar & Booking */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Steps */}
+          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2">
+            {['Select Date', 'Choose Time', 'Confirm'].map((label, i) => (
+              <div key={i} className="flex items-center gap-2 sm:gap-3 shrink-0">
+                <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 ${
+                  step >= i + 1 ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-[var(--color-bg-alt)] text-[var(--color-text-muted)]'
+                }`}>
+                  {i + 1}
+                </div>
+                <span className={`text-sm font-medium whitespace-nowrap ${step >= i + 1 ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'}`}>
+                  {label}
+                </span>
+                {i < 2 && <div className="w-6 sm:w-10 h-0.5 bg-[var(--color-border)] shrink-0" />}
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7">
-            {days.map((day, i) => {
-              const isSelected = selectedDate && isSameDay(day, selectedDate);
-              const disabled = isBefore(day, new Date()) && !isToday(day);
-              const notInMonth = !isSameMonth(day, currentMonth);
-
-              return (
+          {/* Calendar */}
+          {step === 1 && (
+            <div className="card p-0 overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border-light)]">
                 <button
-                  key={i}
-                  onClick={() => !disabled && !notInMonth && handleDateSelect(day)}
-                  disabled={disabled || notInMonth}
-                  className={`
-                    text-center py-2 sm:py-3 text-sm rounded-[var(--radius-sm)] transition-all duration-200
-                    ${isSelected
-                      ? 'bg-[var(--color-primary)] text-white shadow-sm'
-                      : disabled || notInMonth
-                        ? 'text-[var(--color-text-muted)] cursor-not-allowed'
-                        : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-50)] hover:text-[var(--color-primary)]'
-                    }
-                    ${isToday(day) && !isSelected ? 'ring-1 ring-[var(--color-primary)]' : ''}
-                  `}
+                  onClick={handlePrevMonth}
+                  className="h-10 w-10 flex items-center justify-center rounded-[var(--radius-md)] hover:bg-[var(--color-bg-alt)] transition-colors"
+                  aria-label="Previous month"
                 >
-                  {format(day, 'd')}
+                  <ChevronLeft size={20} className="text-[var(--color-text-secondary)]" />
                 </button>
-              );
-            })}
-          </div>
-        </div>
+                <h2 className="text-base sm:text-lg font-semibold text-[var(--color-text)]">
+                  {format(currentMonth, 'MMMM yyyy')}
+                </h2>
+                <button
+                  onClick={handleNextMonth}
+                  className="h-10 w-10 flex items-center justify-center rounded-[var(--radius-md)] hover:bg-[var(--color-bg-alt)] transition-colors"
+                  aria-label="Next month"
+                >
+                  <ChevronRight size={20} className="text-[var(--color-text-secondary)]" />
+                </button>
+              </div>
 
-        {/* Slots / Confirmation / Initial State */}
-        <div className="flex flex-col">
+              <div className="grid grid-cols-7 border-b border-[var(--color-border-light)]">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                  <div key={day} className="text-center text-xs font-medium text-[var(--color-text-muted)] py-3">
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-7">
+                {days.map((day, i) => {
+                  const isSelected = selectedDate && isSameDay(day, selectedDate);
+                  const disabled = isBefore(day, new Date()) && !isToday(day);
+                  const notInMonth = !isSameMonth(day, currentMonth);
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => !disabled && !notInMonth && handleDateSelect(day)}
+                      disabled={disabled || notInMonth}
+                      className={`
+                        text-center py-2 sm:py-3 text-sm rounded-[var(--radius-sm)] transition-all duration-200
+                        ${isSelected
+                          ? 'bg-[var(--color-primary)] text-white shadow-sm'
+                          : disabled || notInMonth
+                            ? 'text-[var(--color-text-muted)] cursor-not-allowed'
+                            : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-50)] hover:text-[var(--color-primary)]'
+                        }
+                        ${isToday(day) && !isSelected ? 'ring-1 ring-[var(--color-primary)]' : ''}
+                      `}
+                    >
+                      {format(day, 'd')}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Slots */}
           {step === 2 && (
             <div className="card animate-fade-in">
               <h3 className="text-lg font-semibold text-[var(--color-text)] mb-1">
@@ -227,6 +236,7 @@ const BookAppointment = () => {
             </div>
           )}
 
+          {/* Confirmation */}
           {step === 3 && selectedSlot && (
             <div className="card animate-fade-in">
               <div className="text-center mb-6">
@@ -393,6 +403,83 @@ const BookAppointment = () => {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Right Column - Doctor Info & Offline Booking */}
+        <div className="space-y-6">
+          {/* Doctor Information Card */}
+          <div className="card">
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src={profile.profilePhoto || '/default-avatar.png'}
+                alt={profile.doctorName}
+                className="w-16 h-16 rounded-full object-cover border-2 border-[var(--color-border)]"
+              />
+              <div>
+                <h3 className="font-semibold text-[var(--color-text)]">{profile.doctorName}</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">{profile.specialization}</p>
+                <p className="text-xs text-[var(--color-text-muted)]">{profile.experienceYears} years experience</p>
+              </div>
+            </div>
+            <div className="space-y-2 text-sm text-[var(--color-text-secondary)]">
+              <p className="flex items-start gap-2">
+                <MapPin size={16} className="mt-0.5 shrink-0 text-[var(--color-text-muted)]" />
+                <span className="text-xs">{profile.clinicAddress}, {profile.city}, {profile.state}</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <DollarSign size={16} className="text-[var(--color-text-muted)]" />
+                <span>₹{profile.consultationFeeMin} - ₹{profile.consultationFeeMax}</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Offline Booking Card */}
+          <div className="card bg-gradient-to-br from-[var(--color-primary-50)] to-white">
+            <h3 className="text-lg font-semibold text-[var(--color-text)] mb-4">Offline Booking</h3>
+            <div className="space-y-3">
+              <a
+                href={`tel:${profile.contactNumber}`}
+                className="flex items-center justify-center gap-2 w-full bg-[var(--color-primary)] text-white py-3 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition-colors"
+              >
+                <Phone size={18} />
+                Call Now
+              </a>
+              <a
+                href={`https://wa.me/${profile.whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors"
+              >
+                <MessageCircle size={18} />
+                WhatsApp
+              </a>
+              <div className="pt-3 border-t border-[var(--color-border-light)] space-y-2 text-sm">
+                <div className="flex items-start gap-2 text-[var(--color-text-secondary)]">
+                  <MapPin size={16} className="mt-0.5 shrink-0" />
+                  <span className="text-xs">{profile.clinicAddress}, {profile.landmark}, {profile.city}, {profile.state} - {profile.pincode}</span>
+                </div>
+                <p className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+                  <Clock size={16} />
+                  {profile.clinicTiming}
+                </p>
+                <p className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+                  <DollarSign size={16} />
+                  ₹{profile.consultationFeeMin} - ₹{profile.consultationFeeMax}
+                </p>
+              </div>
+              {profile.googleMapsLink && (
+                <a
+                  href={profile.googleMapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full bg-white border border-[var(--color-border)] text-[var(--color-text)] py-3 rounded-lg font-medium hover:bg-[var(--color-bg-alt)] transition-colors text-sm"
+                >
+                  <ExternalLink size={16} />
+                  View on Google Maps
+                </a>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -107,25 +107,48 @@ app.use((req, res, next) => {
 
 // Enable CORS with proper configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : [process.env.CLIENT_URL || 'http://localhost:5173'];
+  ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
+  : [process.env.CLIENT_URL || "http://localhost:5173"];
+
+console.log("========== CORS CONFIG ==========");
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("CLIENT_URL:", process.env.CLIENT_URL);
+console.log("ALLOWED_ORIGINS ENV:", process.env.ALLOWED_ORIGINS);
+console.log("Allowed Origins:", allowedOrigins);
+console.log("=================================");
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg = 'The CORS policy for this site does not allow access from the specified origin.';
-        return callback(new Error(msg), false);
+      console.log("Incoming Origin:", origin);
+
+      // Allow requests with no origin (Postman, curl, mobile apps)
+      if (!origin) {
+        console.log("No Origin header. Allowing request.");
+        return callback(null, true);
       }
-      return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        console.log("Origin allowed:", origin);
+        return callback(null, true);
+      }
+
+      console.log("Origin BLOCKED:", origin);
+
+      return callback(
+        new Error(`CORS blocked for origin: ${origin}`),
+        false
+      );
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    exposedHeaders: ['Authorization'],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+    ],
+    exposedHeaders: ["Authorization"],
+    optionsSuccessStatus: 204,
   })
 );
 

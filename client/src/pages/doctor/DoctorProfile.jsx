@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useDoctor } from '../../context/DoctorContext';
 import API from '../../config/api';
 import toast from 'react-hot-toast';
-import { UserRound, User, Mail, Phone, Lock, Shield, LayoutDashboard, CalendarDays, CalendarCheck, Clock, Camera, Trash2 } from 'lucide-react';
+import { UserRound, User, Mail, Phone, Lock, Shield, LayoutDashboard, CalendarDays, CalendarCheck, Clock, Camera, Trash2, Stethoscope, GraduationCap, Languages, MapPin, Briefcase, DollarSign } from 'lucide-react';
 
 const DoctorProfile = () => {
   const { user, updateUser } = useAuth();
+  const { profile: doctorProfile, isLoading: doctorLoading } = useDoctor();
   const [form, setForm] = useState({ name: user?.name || '', phone: user?.phone || '' });
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [saving, setSaving] = useState(false);
@@ -194,6 +196,116 @@ const DoctorProfile = () => {
           </div>
         </form>
       </div>
+
+      {/* Doctor Professional Profile Card */}
+      {doctorProfile && (
+        <div className="card mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-primary-50)] flex items-center justify-center">
+                <Stethoscope size={20} className="text-[var(--color-primary)]" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-[var(--color-text)]">Doctor Profile</h2>
+                <p className="text-sm text-[var(--color-text-muted)]">Your professional details</p>
+              </div>
+            </div>
+            <Link
+              to="/doctor/profile-settings"
+              className="text-sm font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] transition-colors"
+            >
+              Edit Details
+            </Link>
+          </div>
+
+          <div className="space-y-5">
+            {/* Basic Info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                <Stethoscope size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs text-[var(--color-text-muted)]">Specialization</p>
+                  <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.specialization || 'Not set'}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                <Briefcase size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs text-[var(--color-text-muted)]">Experience</p>
+                  <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.experienceYears ? `${doctorProfile.experienceYears} years` : 'Not set'}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                <GraduationCap size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs text-[var(--color-text-muted)]">Qualifications</p>
+                  <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.qualifications || 'Not set'}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                <Languages size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs text-[var(--color-text-muted)]">Languages</p>
+                  <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.languagesSpoken?.length ? doctorProfile.languagesSpoken.join(', ') : 'Not set'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Clinic Info */}
+            <div>
+              <h3 className="text-sm font-semibold text-[var(--color-text)] mb-3 flex items-center gap-2">
+                <MapPin size={16} className="text-[var(--color-primary)]" />
+                Clinic Information
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                  <MapPin size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-xs text-[var(--color-text-muted)]">Clinic Name</p>
+                    <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.clinicName || 'Not set'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                  <MapPin size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-xs text-[var(--color-text-muted)]">Address</p>
+                    <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.clinicAddress || 'Not set'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                  <Phone size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-xs text-[var(--color-text-muted)]">Contact</p>
+                    <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.contactNumber || 'Not set'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                  <DollarSign size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-xs text-[var(--color-text-muted)]">Consultation Fee</p>
+                    <p className="text-sm font-medium text-[var(--color-text)]">
+                      {doctorProfile.consultationFeeMin ? `₹${doctorProfile.consultationFeeMin} - ₹${doctorProfile.consultationFeeMax}` : 'Not set'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Working Info */}
+            {(doctorProfile.workingDays || doctorProfile.clinicTiming) && (
+              <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                <Clock size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs text-[var(--color-text-muted)]">Working Hours</p>
+                  <p className="text-sm font-medium text-[var(--color-text)]">
+                    {[doctorProfile.workingDays, doctorProfile.clinicTiming].filter(Boolean).join(' — ')}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="card mb-6">

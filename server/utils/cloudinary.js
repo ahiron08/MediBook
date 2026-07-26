@@ -55,10 +55,11 @@ const uploadImage = async (fileBuffer, folder = 'doctor-appointment') => {
       publicId: result.public_id,
     };
   } catch (error) {
-    console.error('Cloudinary upload error details:', {
+    console.error('Cloudinary upload error FULL:', {
       message: error.message,
       http_code: error.http_code,
       name: error.name,
+      details: error.details || error.response?.data || 'No additional details',
     });
     throw new Error(`Cloudinary upload failed: ${error.message}`);
   }

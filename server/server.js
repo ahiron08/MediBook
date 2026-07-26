@@ -196,6 +196,9 @@ app.use('/api/doctor', require('./routes/doctor'));
 app.use('/api/availability', require('./routes/availability'));
 app.use('/api/users', require('./routes/users'));
 
+// Doctor Profile routes
+app.use('/api/doctor-profile', require('./routes/doctorProfile'));
+
 // Test route (remove in production)
 app.use('/api/test', require('./routes/test'));
 

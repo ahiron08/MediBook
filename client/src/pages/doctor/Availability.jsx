@@ -66,9 +66,9 @@ const AvailabilityPage = () => {
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Availability Settings</h1>
-        <p className="text-[var(--color-text-muted)]">Configure your working hours and days</p>
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Availability Settings</h1>
+        <p className="text-sm lg:text-base text-[var(--color-text-muted)]">Configure your working hours and days</p>
       </div>
 
       <div className="space-y-6">
@@ -210,9 +210,9 @@ const AvailabilityPage = () => {
                 <p className="text-sm text-[var(--color-text-muted)]">Block specific dates</p>
               </div>
             </div>
-            <button
+          <button
               onClick={() => setShowUnavailableInput(true)}
-              className="inline-flex items-center gap-2 h-10 px-4 text-sm font-medium text-[var(--color-primary)] bg-[var(--color-primary-50)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary-100)] transition-colors"
+              className="inline-flex items-center gap-2 h-10 px-4 text-sm font-medium text-[var(--color-primary)] bg-[var(--color-primary-50)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary-100)] transition-colors shrink-0"
             >
               <FaPlus size={14} />
               Add

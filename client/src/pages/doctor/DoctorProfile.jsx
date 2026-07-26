@@ -115,14 +115,14 @@ const DoctorProfile = () => {
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">My Profile</h1>
-        <p className="text-[var(--color-text-muted)]">Manage your account information</p>
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">My Profile</h1>
+        <p className="text-sm lg:text-base text-[var(--color-text-muted)]">Manage your account information</p>
       </div>
 
       {/* Account Profile Card */}
       <div className="card mb-6">
-        <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[var(--color-border-light)]">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8 pb-6 border-b border-[var(--color-border-light)]">
           <div className="relative w-16 h-16 rounded-[var(--radius-xl)] bg-[var(--color-primary-50)] flex items-center justify-center shrink-0 overflow-hidden">
             {photoPreview ? (
               <img src={photoPreview} alt="Profile" className="w-full h-full object-cover" />
@@ -130,11 +130,11 @@ const DoctorProfile = () => {
               <UserRound size={28} className="text-[var(--color-primary)]" />
             )}
           </div>
-          <div className="flex-1">
+          <div className="flex-1 text-center sm:text-left">
             <h2 className="text-xl font-semibold text-[var(--color-text)]">Dr. {user?.name}</h2>
             <p className="text-sm text-[var(--color-text-muted)] mt-0.5">{user?.email}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-center sm:justify-start">
             <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-primary-dark)] transition-all disabled:opacity-50">
               <Camera size={16} />
               <span>{uploadingPhoto ? 'Uploading...' : 'Upload Photo'}</span>
@@ -423,7 +423,7 @@ const DoctorProfile = () => {
       {/* Quick Actions */}
       <div className="card mb-6">
         <h3 className="text-sm font-semibold text-[var(--color-text)] mb-4">Quick Actions</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
           {quickActions.map((action) => {
             const Icon = action.icon;
             return (

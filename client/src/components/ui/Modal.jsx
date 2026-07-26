@@ -54,7 +54,7 @@ const Modal = ({
       {/* Modal */}
       <div
         className={`
-          relative w-full ${sizes[size] || sizes.md}
+          relative w-full ${sizes[size] || sizes.md} max-w-[95vw] max-h-[90vh] overflow-y-auto
           bg-white rounded-[var(--radius-xl)]
           shadow-[var(--shadow-xl)]
           animate-scale-in
@@ -66,13 +66,13 @@ const Modal = ({
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[var(--color-border-light)]">
-            <h2 id="modal-title" className="text-lg font-semibold text-[var(--color-text)]">
+          <div className="flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 border-b border-[var(--color-border-light)]">
+            <h2 id="modal-title" className="text-base sm:text-lg font-semibold text-[var(--color-text)]">
               {title}
             </h2>
             <button
               onClick={onClose}
-              className="h-8 w-8 flex items-center justify-center rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-alt)] hover:text-[var(--color-text)] transition-colors"
+              className="h-8 w-8 flex items-center justify-center rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-alt)] hover:text-[var(--color-text)] transition-colors shrink-0"
               aria-label="Close modal"
             >
               <X size={18} />
@@ -81,7 +81,7 @@ const Modal = ({
         )}
 
         {/* Content */}
-        <div className="px-6 py-5">
+        <div className="px-4 sm:px-6 py-5">
           {message && (
             <p className="text-sm text-[var(--color-text-secondary)] mb-2">
               {message}
@@ -92,7 +92,7 @@ const Modal = ({
 
         {/* Footer - only render when onConfirm is provided */}
         {onConfirm && (
-          <div className="flex gap-3 px-6 pb-6 pt-4 border-t border-[var(--color-border-light)]">
+          <div className="flex gap-3 px-4 sm:px-6 pb-6 pt-4 border-t border-[var(--color-border-light)]">
             <button
               onClick={onClose}
               className="flex-1 h-12 border border-[var(--color-border)] rounded-[var(--radius-md)] text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg-alt)] transition-colors"

@@ -37,9 +37,9 @@ const UpcomingAppointments = () => {
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Upcoming Appointments</h1>
-        <p className="text-[var(--color-text-muted)]">Your scheduled appointments with the doctor</p>
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Upcoming Appointments</h1>
+        <p className="text-sm lg:text-base text-[var(--color-text-muted)]">Your scheduled appointments with the doctor</p>
       </div>
 
       {isLoading ? (

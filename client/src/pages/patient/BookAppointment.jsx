@@ -101,27 +101,27 @@ const BookAppointment = () => {
   return (
     <div className="max-w-5xl mx-auto animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Book an Appointment</h1>
-        <p className="text-[var(--color-text-muted)]">Choose your preferred date and time slot</p>
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Book an Appointment</h1>
+        <p className="text-sm lg:text-base text-[var(--color-text-muted)]">Choose your preferred date and time slot</p>
       </div>
 
-      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-6">
         {/* Left Column - Calendar & Booking */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 md:space-y-6">
           {/* Steps */}
-          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2">
+          <div className="flex items-center gap-1 sm:gap-3 overflow-x-auto pb-2">
             {['Select Date', 'Choose Time', 'Confirm'].map((label, i) => (
-              <div key={i} className="flex items-center gap-2 sm:gap-3 shrink-0">
-                <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 ${
+              <div key={i} className="flex items-center gap-1 sm:gap-3 shrink-0">
+                <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-200 ${
                   step >= i + 1 ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-[var(--color-bg-alt)] text-[var(--color-text-muted)]'
                 }`}>
                   {i + 1}
                 </div>
-                <span className={`text-sm font-medium whitespace-nowrap ${step >= i + 1 ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'}`}>
+                <span className={`text-xs sm:text-sm font-medium whitespace-nowrap ${step >= i + 1 ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'}`}>
                   {label}
                 </span>
-                {i < 2 && <div className="w-6 sm:w-10 h-0.5 bg-[var(--color-border)] shrink-0" />}
+                {i < 2 && <div className="w-4 sm:w-10 h-0.5 bg-[var(--color-border)] shrink-0" />}
               </div>
             ))}
           </div>
@@ -129,7 +129,7 @@ const BookAppointment = () => {
           {/* Calendar */}
           {step === 1 && (
             <div className="card p-0 overflow-hidden">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border-light)]">
+              <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[var(--color-border-light)]">
                 <button
                   onClick={handlePrevMonth}
                   className="h-10 w-10 flex items-center justify-center rounded-[var(--radius-md)] hover:bg-[var(--color-bg-alt)] transition-colors"
@@ -406,7 +406,7 @@ const BookAppointment = () => {
         </div>
 
         {/* Right Column - Doctor Info & Offline Booking */}
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           {/* Doctor Information Card */}
           <div className="card">
             <div className="flex items-center gap-3 mb-4">

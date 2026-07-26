@@ -123,13 +123,13 @@ const DoctorProfileSettings = () => {
 
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Profile Settings</h1>
-        <p className="text-[var(--color-text-muted)]">Manage your profile and clinic details</p>
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Profile Settings</h1>
+        <p className="text-sm lg:text-base text-[var(--color-text-muted)]">Manage your profile and clinic details</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-1 px-1">
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -303,7 +303,7 @@ const DoctorProfileSettings = () => {
         )}
 
         <div className="flex justify-end">
-          <button type="submit" disabled={uploading} className="btn-primary flex items-center gap-2">
+          <button type="submit" disabled={uploading} className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center">
             <Save size={18} />
             Save Changes
           </button>

@@ -45,10 +45,10 @@ const CalendarView = () => {
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 lg:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Calendar</h1>
-          <p className="text-[var(--color-text-muted)]">View and manage appointments</p>
+          <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Calendar</h1>
+          <p className="text-sm lg:text-base text-[var(--color-text-muted)]">View and manage appointments</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -81,7 +81,7 @@ const CalendarView = () => {
       {/* Calendar Card */}
       <div className="card p-0 overflow-hidden">
         {/* Calendar Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border-light)]">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[var(--color-border-light)]">
           <button
             onClick={() => navigate(-1)}
             className="h-10 w-10 flex items-center justify-center rounded-[var(--radius-md)] hover:bg-[var(--color-bg-alt)] transition-colors"

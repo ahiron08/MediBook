@@ -30,9 +30,9 @@ const AppointmentHistory = () => {
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Appointment History</h1>
-        <p className="text-[var(--color-text-muted)]">View your past appointments</p>
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Appointment History</h1>
+        <p className="text-sm lg:text-base text-[var(--color-text-muted)]">View your past appointments</p>
       </div>
 
       {/* Filter */}
@@ -80,10 +80,10 @@ const AppointmentHistory = () => {
               <tbody>
                 {appointments.map((app) => (
                   <tr key={app._id}>
-                    <td className="font-medium text-[var(--color-text)]">
+                    <td className="font-medium text-[var(--color-text)] text-sm sm:text-base">
                       {format(new Date(app.date), 'MMM d, yyyy')}
                     </td>
-                    <td>{app.startTime}</td>
+                    <td className="text-sm whitespace-nowrap">{app.startTime}</td>
                     <td className="hidden sm:table-cell max-w-[200px] truncate">
                       {app.reason || '-'}
                     </td>

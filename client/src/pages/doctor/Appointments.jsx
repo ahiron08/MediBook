@@ -74,9 +74,9 @@ const Appointments = () => {
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Appointments</h1>
-        <p className="text-[var(--color-text-muted)]">Manage all patient appointments</p>
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Appointments</h1>
+        <p className="text-sm lg:text-base text-[var(--color-text-muted)]">Manage all patient appointments</p>
       </div>
 
       {/* Search & Filters */}
@@ -93,7 +93,7 @@ const Appointments = () => {
               aria-label="Search appointments"
             />
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1 lg:flex-none">
               <Filter size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none" />
               <select
@@ -112,7 +112,7 @@ const Appointments = () => {
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="input-base input-date flex-1 lg:flex-none"
+              className="input-base input-date flex-1 lg:flex-none w-full"
               aria-label="Filter by date"
             />
           </div>
@@ -178,7 +178,7 @@ const Appointments = () => {
               <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[var(--color-border-light)]">
                 <button
                   onClick={() => { setSelectedApp(app); setEditNotes(app.doctorNotes || ''); setShowNotesModal(true); }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-[var(--color-primary)] bg-[var(--color-primary-50)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary)] hover:text-white transition-all duration-200 shadow-sm"
+                  className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-medium text-[var(--color-primary)] bg-[var(--color-primary-50)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary)] hover:text-white transition-all duration-200 shadow-sm"
                   aria-label={`Add notes for ${app.patientName}`}
                 >
                   <Stethoscope size={14} />
@@ -188,7 +188,7 @@ const Appointments = () => {
                   <>
                     <button
                       onClick={() => handleAction('complete', app)}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-white bg-[var(--color-success)] rounded-[var(--radius-md)] hover:bg-[var(--color-success-dark)] transition-all duration-200 shadow-sm hover:shadow-md"
+                      className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-medium text-white bg-[var(--color-success)] rounded-[var(--radius-md)] hover:bg-[var(--color-success-dark)] transition-all duration-200 shadow-sm hover:shadow-md"
                       aria-label={`Complete appointment for ${app.patientName}`}
                     >
                       <CheckCircle2 size={14} />
@@ -196,7 +196,7 @@ const Appointments = () => {
                     </button>
                     <button
                       onClick={() => handleAction('cancel', app)}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-white bg-[var(--color-danger)] rounded-[var(--radius-md)] hover:bg-[var(--color-danger-dark)] transition-all duration-200 shadow-sm hover:shadow-md"
+                      className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-medium text-white bg-[var(--color-danger)] rounded-[var(--radius-md)] hover:bg-[var(--color-danger-dark)] transition-all duration-200 shadow-sm hover:shadow-md"
                       aria-label={`Cancel appointment for ${app.patientName}`}
                     >
                       <XCircle size={14} />
@@ -207,7 +207,7 @@ const Appointments = () => {
                 {(app.status === 'completed' || app.status === 'cancelled') && (
                   <button
                     onClick={() => handleAction('delete', app)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-alt)] rounded-[var(--radius-md)] hover:bg-[var(--color-danger-50)] hover:text-[var(--color-danger)] transition-all duration-200"
+                    className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-alt)] rounded-[var(--radius-md)] hover:bg-[var(--color-danger-50)] hover:text-[var(--color-danger)] transition-all duration-200"
                     aria-label={`Delete appointment for ${app.patientName}`}
                   >
                     <Trash2 size={14} />

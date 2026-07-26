@@ -21,24 +21,24 @@ const PublicDoctorProfile = () => {
     <>
       <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white py-16">
+      <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-6">
             <img
               src={profile.profilePhoto || '/default-avatar.png'}
               alt={profile.doctorName}
-              className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
+              className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg object-cover"
             />
             <div className="text-center md:text-left flex-1">
-              <h1 className="text-4xl font-bold mb-2">{profile.doctorName}</h1>
-              <p className="text-xl text-blue-100 mb-2">{profile.specialization}</p>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-blue-100">
+              <h1 className="text-3xl md:text-4xl font-bold mb-2">{profile.doctorName}</h1>
+              <p className="text-lg md:text-xl text-blue-100 mb-2">{profile.specialization}</p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 text-sm text-blue-100">
                 <span>{profile.experienceYears} years experience</span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>{profile.qualifications}</span>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 w-full md:w-auto justify-center">
               <a href={`tel:${profile.contactNumber}`} className="bg-white text-[var(--color-primary)] px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-blue-50">
                 <Phone size={18} />
                 Call
@@ -52,20 +52,20 @@ const PublicDoctorProfile = () => {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-12 space-y-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-10 lg:space-y-12">
         {/* About Section */}
         {profile.about && (
           <section>
-            <h2 className="text-3xl font-bold text-[var(--color-text)] mb-4">About</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-text)] mb-4">About</h2>
             <p className="text-[var(--color-text-secondary)] leading-relaxed whitespace-pre-line">{profile.about}</p>
           </section>
         )}
 
         {/* Education & Languages */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {profile.education?.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
                 <GraduationCap size={28} className="text-[var(--color-primary)]" />
                 Education
               </h2>
@@ -82,7 +82,7 @@ const PublicDoctorProfile = () => {
 
           {profile.languagesSpoken?.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
                 <Languages size={28} className="text-[var(--color-primary)]" />
                 Languages
               </h2>
@@ -95,7 +95,7 @@ const PublicDoctorProfile = () => {
 
         {/* Clinic Info */}
         <section>
-          <h2 className="text-3xl font-bold text-[var(--color-text)] mb-6">Clinic Information</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-text)] mb-6">Clinic Information</h2>
           <div className="bg-white border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
             <div>
               <h3 className="font-semibold text-[var(--color-text)] mb-3">{profile.clinicName}</h3>
@@ -150,7 +150,7 @@ const PublicDoctorProfile = () => {
         {/* Services */}
         {profile.services?.length > 0 && (
           <section>
-            <h2 className="text-3xl font-bold text-[var(--color-text)] mb-6">Services Offered</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-text)] mb-6">Services Offered</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {profile.services.map(service => (
                 <div key={service._id} className="bg-white border border-[var(--color-border)] rounded-2xl p-5 hover:shadow-md transition-shadow">
@@ -166,7 +166,7 @@ const PublicDoctorProfile = () => {
         {/* Testimonials */}
         {profile.testimonials?.length > 0 && (
           <section>
-            <h2 className="text-3xl font-bold text-[var(--color-text)] mb-6">Patient Testimonials</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-text)] mb-6">Patient Testimonials</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {profile.testimonials.map(testimonial => (
                 <div key={testimonial._id} className="bg-white border border-[var(--color-border)] rounded-2xl p-5 shadow-sm">
@@ -186,8 +186,8 @@ const PublicDoctorProfile = () => {
         )}
 
         {/* Book Appointment CTA */}
-        <section className="text-center py-8">
-          <a href="/patient/book" className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--color-primary)] text-white rounded-xl font-medium text-lg hover:bg-[var(--color-primary-dark)] transition-all duration-200 shadow-lg hover:shadow-xl">
+        <section className="text-center py-6 lg:py-8">
+          <a href="/patient/book" className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-[var(--color-primary)] text-white rounded-xl font-medium text-base md:text-lg hover:bg-[var(--color-primary-dark)] transition-all duration-200 shadow-lg hover:shadow-xl">
             <CalendarCheck size={24} />
             Book an Appointment
           </a>

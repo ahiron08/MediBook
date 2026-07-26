@@ -18,23 +18,23 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white py-20">
+      <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white py-12 lg:py-20">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center gap-8">
+          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
             <img
               src={profile.profilePhoto || '/default-avatar.png'}
               alt={profile.doctorName}
-              className="w-40 h-40 rounded-full border-4 border-white shadow-xl object-cover"
+              className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-xl object-cover"
             />
             <div className="text-center md:text-left flex-1">
-              <h1 className="text-4xl md:text-5xl font-bold mb-3">{profile.doctorName}</h1>
-              <p className="text-xl md:text-2xl text-blue-100 mb-3">{profile.specialization}</p>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-blue-100 mb-6">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">{profile.doctorName}</h1>
+              <p className="text-lg md:text-xl lg:text-2xl text-blue-100 mb-3">{profile.specialization}</p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 text-sm text-blue-100 mb-6">
                 <span className="flex items-center gap-1">
                   <Award size={16} />
                   {profile.experienceYears} years experience
                 </span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>{profile.qualifications}</span>
               </div>
               <div className="flex flex-wrap gap-3 justify-center md:justify-start">
@@ -60,22 +60,22 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-16 space-y-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 space-y-12 lg:space-y-16">
         {/* About Section */}
         {profile.about && (
           <section>
-            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-6 text-center">About</h2>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-text)] mb-4 md:mb-6 text-center">About</h2>
             <div className="max-w-3xl mx-auto">
-              <p className="text-[var(--color-text-secondary)] leading-relaxed text-lg whitespace-pre-line text-center">{profile.about}</p>
+              <p className="text-[var(--color-text-secondary)] leading-relaxed text-base md:text-lg whitespace-pre-line text-center">{profile.about}</p>
             </div>
           </section>
         )}
 
         {/* Education & Languages */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {profile.education?.length > 0 && (
             <section className="card">
-              <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
+              <h2 className="text-xl md:text-2xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
                 <GraduationCap size={28} className="text-[var(--color-primary)]" />
                 Education
               </h2>
@@ -188,9 +188,9 @@ const HomePage = () => {
         )}
 
         {/* CTA Section */}
-        <section className="text-center py-12">
+        <section className="text-center py-8 lg:py-12">
           <div className="card max-w-2xl mx-auto bg-gradient-to-br from-[var(--color-primary-50)] to-white">
-            <h2 className="text-3xl font-bold text-[var(--color-text)] mb-4">Ready to Book an Appointment?</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-text)] mb-4">Ready to Book an Appointment?</h2>
             <p className="text-[var(--color-text-secondary)] mb-6">Schedule your visit today and experience quality healthcare</p>
             <Link to="/patient/book" className="btn-primary inline-flex items-center gap-2 text-lg px-8 py-4">
               <CalendarCheck size={24} />

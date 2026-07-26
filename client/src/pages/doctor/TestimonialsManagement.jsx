@@ -89,13 +89,13 @@ const TestimonialsManagement = () => {
 
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 lg:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Testimonials</h1>
-          <p className="text-[var(--color-text-muted)]">Manage patient testimonials and reviews</p>
+          <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Testimonials</h1>
+          <p className="text-sm lg:text-base text-[var(--color-text-muted)]">Manage patient testimonials and reviews</p>
         </div>
         {!showAddForm && !editingId && (
-          <button onClick={() => setShowAddForm(true)} className="btn-primary flex items-center gap-2">
+          <button onClick={() => setShowAddForm(true)} className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center">
             <Plus size={18} />
             Add Testimonial
           </button>
@@ -164,12 +164,12 @@ const TestimonialsManagement = () => {
                 Visible to public
               </label>
             </div>
-            <div className="flex gap-3">
-              <button type="submit" className="btn-primary flex items-center gap-2">
+            <div className="flex gap-3 w-full sm:w-auto">
+              <button type="submit" className="btn-primary flex items-center gap-2 flex-1 sm:flex-none justify-center">
                 <Save size={18} />
                 {editingId ? 'Update' : 'Add'} Testimonial
               </button>
-              <button type="button" onClick={cancelEdit} className="btn-secondary">
+              <button type="button" onClick={cancelEdit} className="btn-secondary flex-1 sm:flex-none justify-center">
                 Cancel
               </button>
             </div>

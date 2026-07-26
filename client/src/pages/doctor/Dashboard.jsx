@@ -72,13 +72,13 @@ const Dashboard = () => {
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">Dashboard</h1>
-        <p className="text-[var(--color-text-muted)]">Overview of your clinic activity</p>
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] mb-1">Dashboard</h1>
+        <p className="text-sm lg:text-base text-[var(--color-text-muted)]">Overview of your clinic activity</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
         {cards.map((card) => {
           const Icon = card.icon;
           const colorClasses = {
@@ -117,9 +117,9 @@ const Dashboard = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="mt-6 lg:mt-8">
+        <h2 className="text-base lg:text-lg font-semibold text-[var(--color-text)] mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
           {quickActions.map((action) => {
             const Icon = action.icon;
             return (
@@ -141,9 +141,9 @@ const Dashboard = () => {
       </div>
 
       {/* Today's Appointments */}
-      <div className="mt-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-[var(--color-text)]">Today's Appointments</h2>
+      <div className="mt-6 lg:mt-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <h2 className="text-base lg:text-lg font-semibold text-[var(--color-text)]">Today's Appointments</h2>
           <Link
             to="/doctor/appointments"
             className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-medium transition-colors"
@@ -176,13 +176,13 @@ const Dashboard = () => {
                 <tbody>
                   {todayAppointments.map((app) => (
                     <tr key={app._id}>
-                      <td className="font-medium text-[var(--color-text)]">
+                      <td className="font-medium text-[var(--color-text)] text-sm sm:text-base">
                         {app.patientName}
                       </td>
                       <td className="hidden sm:table-cell text-sm text-[var(--color-text-secondary)]">
                         {app.patientPhone}
                       </td>
-                      <td className="text-sm">
+                      <td className="text-sm whitespace-nowrap">
                         {app.startTime} - {app.endTime}
                       </td>
                       <td>

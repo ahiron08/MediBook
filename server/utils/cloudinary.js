@@ -4,15 +4,26 @@ const dotenv = require('dotenv');
 dotenv.config({ path: `${__dirname}/../.env` });
 
 // Validate Cloudinary configuration
-if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+const apiKey = process.env.CLOUDINARY_API_KEY;
+const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+if (!cloudName || !apiKey || !apiSecret) {
   console.warn('WARNING: Cloudinary credentials not configured. Photo upload will fail.');
 }
 
 // Configure Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: cloudName,
+  api_key: apiKey,
+  api_secret: apiSecret,
+});
+
+// Log configuration status (without exposing secrets)
+console.log('Cloudinary config:', {
+  cloudName: cloudName || 'NOT SET',
+  apiKey: apiKey ? `${apiKey.substring(0, 8)}...` : 'NOT SET',
+  apiSecret: apiSecret ? 'SET' : 'NOT SET',
 });
 
 // Upload image to Cloudinary from buffer

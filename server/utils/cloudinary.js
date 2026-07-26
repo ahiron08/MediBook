@@ -29,22 +29,23 @@ console.log('Cloudinary config:', {
 // Upload image to Cloudinary from buffer
 const uploadImage = async (fileBuffer, folder = 'doctor-appointment') => {
   try {
-    // Convert buffer to base64 data URI
-    const base64Image = `data:image/jpeg;base64,${fileBuffer.toString('base64')}`;
-    
-    console.log('Attempting Cloudinary upload with:', {
-      cloudName,
-      folder,
-      imageSize: fileBuffer.length,
-    });
-    
-    const result = await cloudinary.uploader.upload(base64Image, {
-      folder,
-      resource_type: 'image',
-      transformation: [
-        { width: 400, height: 400, crop: 'fill', gravity: 'face' },
-        { quality: 'auto', fetch_format: 'auto' },
-      ],
+    // Use upload_stream for better compatibility
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder,
+          resource_type: 'image',
+          transformation: [
+            { width: 400, height: 400, crop: 'fill', gravity: 'face' },
+            { quality: 'auto', fetch_format: 'auto' },
+          ],
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      stream.end(fileBuffer);
     });
     
     console.log('Cloudinary upload successful:', result.secure_url);

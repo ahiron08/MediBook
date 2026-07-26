@@ -152,6 +152,9 @@ app.use('/api/doctor', require('./routes/doctor'));
 app.use('/api/availability', require('./routes/availability'));
 app.use('/api/users', require('./routes/users'));
 
+// Test route (remove in production)
+app.use('/api/test', require('./routes/test'));
+
 // Health check (no sensitive info exposed)
 app.get('/api/health', (req, res) => {
   res.json({

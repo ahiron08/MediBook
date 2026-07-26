@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const { uploadImage, deleteImage } = require('../utils/cloudinary');
+const upload = require('../middleware/upload');
 const logger = require('../utils/logger');
 
 // @desc    Update user profile
@@ -123,8 +125,102 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+// @desc    Upload doctor photo
+// @route   POST /api/users/me/photo
+// @access  Private (Doctor only)
+const uploadPhoto = async (req, res) => {
+  try {
+    if (req.user.role !== 'doctor') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only doctors can upload profile photos',
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please upload an image file',
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    // Delete old photo if exists
+    if (user.photoPublicId) {
+      await deleteImage(user.photoPublicId);
+    }
+
+    // Upload new photo
+    const result = await uploadImage(req.file.buffer, 'doctor-profiles');
+
+    // Update user
+    user.photo = result.url;
+    user.photoPublicId = result.publicId;
+    await user.save();
+
+    logger.info(`Doctor photo uploaded: ${user._id}`, { userId: user._id });
+
+    res.json({
+      success: true,
+      message: 'Photo uploaded successfully',
+      photo: result.url,
+    });
+  } catch (error) {
+    logger.error(`Photo upload error: ${error.message}`, { stack: error.stack, userId: req.user?._id });
+    res.status(500).json({
+      success: false,
+      message: 'Server error uploading photo',
+    });
+  }
+};
+
+// @desc    Delete doctor photo
+// @route   DELETE /api/users/me/photo
+// @access  Private (Doctor only)
+const deletePhoto = async (req, res) => {
+  try {
+    if (req.user.role !== 'doctor') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only doctors can delete profile photos',
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user.photoPublicId) {
+      return res.status(400).json({
+        success: false,
+        message: 'No photo to delete',
+      });
+    }
+
+    await deleteImage(user.photoPublicId);
+
+    user.photo = '';
+    user.photoPublicId = '';
+    await user.save();
+
+    logger.info(`Doctor photo deleted: ${user._id}`, { userId: user._id });
+
+    res.json({
+      success: true,
+      message: 'Photo deleted successfully',
+    });
+  } catch (error) {
+    logger.error(`Photo delete error: ${error.message}`, { stack: error.stack, userId: req.user?._id });
+    res.status(500).json({
+      success: false,
+      message: 'Server error deleting photo',
+    });
+  }
+};
+
 module.exports = {
   updateProfile,
   changePassword,
   deleteAccount,
+  uploadPhoto,
+  deletePhoto,
 };

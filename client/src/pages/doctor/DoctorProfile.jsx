@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../config/api';
 import toast from 'react-hot-toast';
-import { UserRound, User, Mail, Phone, Lock, Shield, LayoutDashboard, CalendarDays, CalendarCheck, Clock } from 'lucide-react';
+import { UserRound, User, Mail, Phone, Lock, Shield, LayoutDashboard, CalendarDays, CalendarCheck, Clock, Camera, Trash2 } from 'lucide-react';
 
 const DoctorProfile = () => {
   const { user, updateUser } = useAuth();
@@ -11,6 +11,8 @@ const DoctorProfile = () => {
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [saving, setSaving] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState(user?.photo || '');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,6 +60,51 @@ const DoctorProfile = () => {
     { path: '/doctor/availability', label: 'Availability', icon: Clock },
   ];
 
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
+
+    setUploadingPhoto(true);
+    const formData = new FormData();
+    formData.append('photo', file);
+
+    try {
+      const { data } = await API.post('/users/me/photo', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      updateUser({ ...user, photo: data.photo });
+      setPhotoPreview(data.photo);
+      toast.success('Photo uploaded successfully');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to upload photo');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  const handlePhotoDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete your profile photo?')) return;
+
+    try {
+      await API.delete('/users/me/photo');
+      updateUser({ ...user, photo: '', photoPublicId: '' });
+      setPhotoPreview('');
+      toast.success('Photo deleted');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete photo');
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
       {/* Header */}
@@ -69,12 +116,28 @@ const DoctorProfile = () => {
       {/* Profile Card */}
       <div className="card mb-6">
         <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[var(--color-border-light)]">
-          <div className="w-16 h-16 rounded-[var(--radius-xl)] bg-[var(--color-primary-50)] flex items-center justify-center shrink-0">
-            <UserRound size={28} className="text-[var(--color-primary)]" />
+          <div className="relative w-16 h-16 rounded-[var(--radius-xl)] bg-[var(--color-primary-50)] flex items-center justify-center shrink-0 overflow-hidden">
+            {photoPreview ? (
+              <img src={photoPreview} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <UserRound size={28} className="text-[var(--color-primary)]" />
+            )}
           </div>
-          <div>
+          <div className="flex-1">
             <h2 className="text-xl font-semibold text-[var(--color-text)]">Dr. {user?.name}</h2>
             <p className="text-sm text-[var(--color-text-muted)] mt-0.5">{user?.email}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-primary-dark)] transition-all disabled:opacity-50">
+              <Camera size={16} />
+              <span>{uploadingPhoto ? 'Uploading...' : 'Upload Photo'}</span>
+              <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} disabled={uploadingPhoto} />
+            </label>
+            {photoPreview && (
+              <button type="button" onClick={handlePhotoDelete} className="p-2 text-red-600 hover:bg-red-50 rounded-[var(--radius-md)] transition-colors" title="Delete photo">
+                <Trash2 size={18} />
+              </button>
+            )}
           </div>
         </div>
 

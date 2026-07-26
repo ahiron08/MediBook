@@ -71,6 +71,16 @@ export const AuthProvider = ({ children }) => {
     setUser(newUser);
   };
 
+  // Helper to update just the photo
+  const updatePhoto = (photoUrl) => {
+    updateUser({ photo: photoUrl });
+  };
+
+  // Helper to remove photo
+  const removePhoto = () => {
+    updateUser({ photo: '', photoPublicId: '' });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -81,6 +91,8 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         updateUser,
+        updatePhoto,
+        removePhoto,
       }}
     >
       {children}

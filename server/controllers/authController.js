@@ -41,6 +41,7 @@ const register = async (req, res) => {
           email: user.email,
           phone: user.phone,
           role: user.role,
+          photo: user.photo || '',
         },
       });
     }
@@ -108,6 +109,7 @@ const login = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        photo: user.photo || '',
       },
     });
   } catch (error) {
@@ -174,6 +176,7 @@ const doctorLogin = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        photo: user.photo || '',
       },
     });
   } catch (error) {
@@ -207,6 +210,7 @@ const getMe = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        photo: user.photo || '',
       },
     });
   } catch (error) {

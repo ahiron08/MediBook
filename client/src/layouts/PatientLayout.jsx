@@ -26,7 +26,6 @@ const PatientLayout = () => {
     { path: '/patient/upcoming', label: 'Upcoming', icon: CalendarCheck },
     { path: '/patient/history', label: 'History', icon: History },
     { path: '/patient/profile', label: 'Profile', icon: UserCircle },
-    { path: '/doctor-profile', label: 'Doctor Profile', icon: UserCircle },
   ];
 
   const handleLogout = () => {

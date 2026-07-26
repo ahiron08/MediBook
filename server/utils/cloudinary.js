@@ -62,15 +62,7 @@ const uploadImage = async (fileBuffer, folder = 'doctor-appointment') => {
       details: error.details || 'No details',
       response: error.response?.data || 'No response data',
       stack: error.stack,
-      // Log the entire error object to see all properties
-      fullError: JSON.stringify(error, null, 2),
     });
-    
-    // Provide more helpful error messages
-    if (error.http_code === 403) {
-      throw new Error('Cloudinary upload forbidden: Check your account settings, upload restrictions, or folder permissions in Cloudinary dashboard');
-    }
-    
     throw new Error(`Cloudinary upload failed: ${error.message}`);
   }
 };

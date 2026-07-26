@@ -65,7 +65,6 @@ Thumbs.db
 
 # Server environment files
 server/.env
-server/.env.local
 server/.envrough
 
 # Client build

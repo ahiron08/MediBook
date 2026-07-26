@@ -25,10 +25,6 @@ import CalendarView from './pages/doctor/Calendar';
 import DoctorAppointments from './pages/doctor/Appointments';
 import AvailabilityPage from './pages/doctor/Availability';
 import DoctorProfile from './pages/doctor/DoctorProfile';
-import ManageProfile from './pages/doctor/ManageProfile';
-
-// Public Pages
-import DoctorPublicProfile from './pages/DoctorPublicProfile';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -85,13 +81,8 @@ function App() {
               <Route path="appointments" element={<DoctorAppointments />} />
               <Route path="availability" element={<AvailabilityPage />} />
               <Route path="profile" element={<DoctorProfile />} />
-              <Route path="manage-profile" element={<ManageProfile />} />
               <Route path="settings" element={<AvailabilityPage />} />
             </Route>
-
-            {/* Public Routes */}
-            <Route path="/doctor-profile" element={<DoctorPublicProfile />} />
-            <Route path="/book" element={<BookAppointment />} />
 
             {/* Catch all */}
             <Route path="*" element={<Navigate to="/login" replace />} />

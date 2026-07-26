@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import API from '../../config/api';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Modal from '../../components/ui/Modal';
 import { format } from 'date-fns';
-import { CalendarDays, Clock, X, Eye, User } from 'lucide-react';
+import { CalendarDays, Clock, X, Eye, User, AlertCircle } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import EmptyState from '../../components/ui/EmptyState';
 
@@ -21,7 +21,7 @@ const UpcomingAppointments = () => {
 
   const cancelMutation = useMutation({
     mutationFn: (id) => API.patch(`/appointments/${id}/cancel`),
-    onSuccess: () => { queryClient.invalidateQueries(['upcomingAppointments']); toast.success('Appointment cancelled'); setCancelId(null); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['upcomingAppointments'] }); toast.success('Appointment cancelled'); setCancelId(null); },
     onError: (error) => { toast.error(error.response?.data?.message || 'Failed to cancel'); },
   });
 

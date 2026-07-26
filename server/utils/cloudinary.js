@@ -13,22 +13,24 @@ cloudinary.config({
 // Upload image to Cloudinary from buffer
 const uploadImage = async (fileBuffer, folder = 'doctor-appointment') => {
   try {
-    const result = await cloudinary.uploader.upload(
-      `data:image/jpeg;base64,${fileBuffer.toString('base64')}`,
-      {
-        folder,
-        resource_type: 'image',
-        transformation: [
-          { width: 400, height: 400, crop: 'fill', gravity: 'face' },
-          { quality: 'auto', fetch_format: 'auto' },
-        ],
-      }
-    );
+    // Convert buffer to base64 data URI
+    const base64Image = `data:image/jpeg;base64,${fileBuffer.toString('base64')}`;
+    
+    const result = await cloudinary.uploader.upload(base64Image, {
+      folder,
+      resource_type: 'image',
+      transformation: [
+        { width: 400, height: 400, crop: 'fill', gravity: 'face' },
+        { quality: 'auto', fetch_format: 'auto' },
+      ],
+    });
+    
     return {
       url: result.secure_url,
       publicId: result.public_id,
     };
   } catch (error) {
+    console.error('Cloudinary upload error:', error);
     throw new Error(`Cloudinary upload failed: ${error.message}`);
   }
 };

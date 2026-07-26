@@ -12,7 +12,7 @@ const AppointmentHistory = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ['appointmentHistory', filter],
-    queryFn: () => API.get(`/appointments/my?status=${filter}&limit=50`),
+    queryFn: () => API.get(`/appointments/my?limit=50${filter ? `&status=${filter}` : ''}`),
   });
 
   const appointments = data?.data?.appointments || [];

@@ -59,7 +59,9 @@ const uploadImage = async (fileBuffer, folder = 'doctor-appointment') => {
       message: error.message,
       http_code: error.http_code,
       name: error.name,
-      details: error.details || error.response?.data || 'No additional details',
+      details: error.details || 'No details',
+      response: error.response?.data || 'No response data',
+      stack: error.stack,
     });
     throw new Error(`Cloudinary upload failed: ${error.message}`);
   }

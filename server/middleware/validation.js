@@ -188,6 +188,11 @@ const validationSchemas = {
     startTime: commonValidations.time,
   }),
 
+  // Slots query (only date is required)
+  getSlotsQuery: Joi.object({
+    date: commonValidations.date,
+  }),
+
   // Query validation
   getAppointmentsQuery: Joi.object({
     status: Joi.string().valid('pending', 'confirmed', 'completed', 'cancelled', 'rescheduled').optional(),

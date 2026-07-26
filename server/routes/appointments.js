@@ -11,8 +11,8 @@ const {
 const { protect, authorize } = require('../middleware/auth');
 const { validate, validateQuery, validateParams } = require('../middleware/validation');
 
-// Public route
-router.get('/slots', validateQuery('setAvailability'), getAvailableSlots);
+// Public route - only requires date
+router.get('/slots', validateQuery('getSlotsQuery'), getAvailableSlots);
 
 // Protected patient routes with validation
 router.get('/my', protect, authorize('patient'), validateQuery('getAppointmentsQuery'), getMyAppointments);

@@ -7,6 +7,7 @@ import Modal from '../../components/ui/Modal';
 import { format } from 'date-fns';
 import { CalendarDays, Clock, X, Eye, User } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
+import EmptyState from '../../components/ui/EmptyState';
 
 const UpcomingAppointments = () => {
   const [cancelId, setCancelId] = useState(null);

@@ -5,6 +5,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { format } from 'date-fns';
 import { History, Filter } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
+import EmptyState from '../../components/ui/EmptyState';
 
 const AppointmentHistory = () => {
   const [filter, setFilter] = useState('');

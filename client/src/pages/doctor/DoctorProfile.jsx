@@ -1,14 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useDoctor } from '../../context/DoctorContext';
 import API from '../../config/api';
 import toast from 'react-hot-toast';
-import { UserRound, User, Mail, Phone, Lock, Shield, LayoutDashboard, CalendarDays, CalendarCheck, Clock, Camera, Trash2, Stethoscope, GraduationCap, Languages, MapPin, Briefcase, DollarSign } from 'lucide-react';
+import { 
+  UserRound, User, Mail, Phone, Lock, Shield, LayoutDashboard, 
+  CalendarDays, CalendarCheck, Clock, Camera, Trash2, Stethoscope, 
+  GraduationCap, Languages, MapPin, Briefcase, DollarSign, 
+  BookOpen, Star, MessageCircle, ExternalLink, Award, Quote 
+} from 'lucide-react';
 
 const DoctorProfile = () => {
   const { user, updateUser } = useAuth();
-  const { profile: doctorProfile, isLoading: doctorLoading } = useDoctor();
+  const { profile: doctorProfile } = useDoctor();
   const [form, setForm] = useState({ name: user?.name || '', phone: user?.phone || '' });
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [saving, setSaving] = useState(false);
@@ -115,7 +120,7 @@ const DoctorProfile = () => {
         <p className="text-[var(--color-text-muted)]">Manage your account information</p>
       </div>
 
-      {/* Profile Card */}
+      {/* Account Profile Card */}
       <div className="card mb-6">
         <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[var(--color-border-light)]">
           <div className="relative w-16 h-16 rounded-[var(--radius-xl)] bg-[var(--color-primary-50)] flex items-center justify-center shrink-0 overflow-hidden">
@@ -144,7 +149,6 @@ const DoctorProfile = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Personal Info Cluster */}
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Full Name</label>
             <div className="relative">
@@ -171,7 +175,6 @@ const DoctorProfile = () => {
             </div>
           </div>
 
-          {/* Account Info Cluster (read-only) */}
           <div className="md:col-span-2 space-y-1.5">
             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Email</label>
             <div className="relative">
@@ -218,9 +221,17 @@ const DoctorProfile = () => {
             </Link>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-6">
+            {/* About Section */}
+            {doctorProfile.about && (
+              <div>
+                <h3 className="text-sm font-semibold text-[var(--color-text)] mb-2">About</h3>
+                <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{doctorProfile.about}</p>
+              </div>
+            )}
+
             {/* Basic Info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
                 <Stethoscope size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
                 <div>
@@ -251,13 +262,31 @@ const DoctorProfile = () => {
               </div>
             </div>
 
+            {/* Education */}
+            {doctorProfile.education?.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-[var(--color-text)] mb-3 flex items-center gap-2">
+                  <BookOpen size={16} className="text-[var(--color-primary)]" />
+                  Education
+                </h3>
+                <div className="space-y-2">
+                  {doctorProfile.education.map((edu, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                      <Award size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                      <p className="text-sm text-[var(--color-text)]">{edu}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Clinic Info */}
             <div>
               <h3 className="text-sm font-semibold text-[var(--color-text)] mb-3 flex items-center gap-2">
                 <MapPin size={16} className="text-[var(--color-primary)]" />
                 Clinic Information
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
                   <MapPin size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
                   <div>
@@ -269,14 +298,29 @@ const DoctorProfile = () => {
                   <MapPin size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
                   <div>
                     <p className="text-xs text-[var(--color-text-muted)]">Address</p>
-                    <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.clinicAddress || 'Not set'}</p>
+                    <p className="text-sm font-medium text-[var(--color-text)]">
+                      {[
+                        doctorProfile.clinicAddress,
+                        doctorProfile.landmark,
+                        doctorProfile.city,
+                        doctorProfile.state,
+                        doctorProfile.pincode,
+                      ].filter(Boolean).join(', ') || 'Not set'}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
                   <Phone size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-[var(--color-text-muted)]">Contact</p>
+                    <p className="text-xs text-[var(--color-text-muted)]">Contact Number</p>
                     <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.contactNumber || 'Not set'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                  <MessageCircle size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-xs text-[var(--color-text-muted)]">WhatsApp Number</p>
+                    <p className="text-sm font-medium text-[var(--color-text)]">{doctorProfile.whatsappNumber || 'Not set'}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
@@ -288,18 +332,87 @@ const DoctorProfile = () => {
                     </p>
                   </div>
                 </div>
+                {(doctorProfile.workingDays || doctorProfile.clinicTiming) && (
+                  <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                    <Clock size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs text-[var(--color-text-muted)]">Working Hours</p>
+                      <p className="text-sm font-medium text-[var(--color-text)] whitespace-pre-line">
+                        {doctorProfile.workingDays && <>{doctorProfile.workingDays}<br /></>}
+                        {doctorProfile.clinicTiming}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {doctorProfile.googleMapsLink && (
+                  <div className="sm:col-span-2 flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                    <ExternalLink size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs text-[var(--color-text-muted)]">Google Maps Link</p>
+                      <a href={doctorProfile.googleMapsLink} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-[var(--color-primary)] hover:underline truncate block">
+                        {doctorProfile.googleMapsLink}
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Working Info */}
-            {(doctorProfile.workingDays || doctorProfile.clinicTiming) && (
-              <div className="flex items-start gap-3 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
-                <Clock size={18} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
-                <div>
-                  <p className="text-xs text-[var(--color-text-muted)]">Working Hours</p>
-                  <p className="text-sm font-medium text-[var(--color-text)]">
-                    {[doctorProfile.workingDays, doctorProfile.clinicTiming].filter(Boolean).join(' — ')}
-                  </p>
+            {/* Services */}
+            {doctorProfile.services?.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-[var(--color-text)] mb-3 flex items-center gap-2">
+                  <Briefcase size={16} className="text-[var(--color-primary)]" />
+                  Services ({doctorProfile.services.length})
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {doctorProfile.services.map((service) => (
+                    <div key={service._id} className="p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                      <p className="text-sm font-medium text-[var(--color-text)]">{service.name}</p>
+                      {service.description && (
+                        <p className="text-xs text-[var(--color-text-muted)] mt-1">{service.description}</p>
+                      )}
+                      {service.fee && (
+                        <p className="text-xs font-medium text-[var(--color-primary)] mt-1">₹{service.fee}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Testimonials */}
+            {doctorProfile.testimonials?.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-[var(--color-text)] mb-3 flex items-center gap-2">
+                  <Star size={16} className="text-[var(--color-primary)]" />
+                  Testimonials ({doctorProfile.testimonials.length})
+                </h3>
+                <div className="space-y-3">
+                  {doctorProfile.testimonials.map((testimonial) => (
+                    <div key={testimonial._id} className="p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-alt)]">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-sm font-medium text-[var(--color-text)]">{testimonial.patientName}</p>
+                        <div className="flex items-center gap-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} size={14} className={i < testimonial.rating ? 'text-[var(--color-warning)] fill-current' : 'text-[var(--color-text-muted)]'} />
+                          ))}
+                        </div>
+                      </div>
+                      {testimonial.review && (
+                        <p className="text-xs text-[var(--color-text-secondary)] italic flex items-start gap-1">
+                          <Quote size={12} className="shrink-0 mt-0.5 text-[var(--color-text-muted)]" />
+                          "{testimonial.review}"
+                        </p>
+                      )}
+                      <p className="text-xs text-[var(--color-text-muted)] mt-1">
+                        {new Date(testimonial.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        {!testimonial.visible && (
+                          <span className="ml-2 text-red-500">(Hidden)</span>
+                        )}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -344,7 +457,6 @@ const DoctorProfile = () => {
         </div>
 
         <form onSubmit={handlePasswordChange} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Current Password (full width) */}
           <div className="md:col-span-2 space-y-1.5">
             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Current Password</label>
             <div className="relative">
@@ -358,7 +470,6 @@ const DoctorProfile = () => {
             </div>
           </div>
 
-          {/* New Password + Confirm Password Cluster */}
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">New Password</label>
             <div className="relative">

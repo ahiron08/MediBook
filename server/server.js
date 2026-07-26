@@ -16,6 +16,15 @@ const logger = require('./utils/logger');
 // Load env vars
 dotenv.config({ path: `${__dirname}/.env` });
 
+// Use custom DNS servers to bypass college network DNS issues
+try {
+  const dns = require('node:dns');
+  dns.setServers(['1.1.1.1', '8.8.8.8']);
+  console.log('Custom DNS servers configured');
+} catch (e) {
+  console.warn('Could not set custom DNS servers:', e.message);
+}
+
 // Connect to database
 connectDB();
 

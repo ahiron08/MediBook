@@ -32,6 +32,12 @@ const uploadImage = async (fileBuffer, folder = 'doctor-appointment') => {
     // Convert buffer to base64 data URI
     const base64Image = `data:image/jpeg;base64,${fileBuffer.toString('base64')}`;
     
+    console.log('Attempting Cloudinary upload with:', {
+      cloudName,
+      folder,
+      imageSize: fileBuffer.length,
+    });
+    
     const result = await cloudinary.uploader.upload(base64Image, {
       folder,
       resource_type: 'image',
@@ -41,12 +47,18 @@ const uploadImage = async (fileBuffer, folder = 'doctor-appointment') => {
       ],
     });
     
+    console.log('Cloudinary upload successful:', result.secure_url);
+    
     return {
       url: result.secure_url,
       publicId: result.public_id,
     };
   } catch (error) {
-    console.error('Cloudinary upload error:', error);
+    console.error('Cloudinary upload error details:', {
+      message: error.message,
+      http_code: error.http_code,
+      name: error.name,
+    });
     throw new Error(`Cloudinary upload failed: ${error.message}`);
   }
 };
